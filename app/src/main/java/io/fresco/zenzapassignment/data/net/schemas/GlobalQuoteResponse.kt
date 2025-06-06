@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GlobalQuoteResponse(
     @SerializedName("Global Quote")
-    val globalQuote: GlobalQuote
+    val globalQuote: GlobalQuote,
 )
 
 data class GlobalQuote(
@@ -27,5 +27,5 @@ data class GlobalQuote(
     @SerializedName("09. change")
     val change: String,
     @SerializedName("10. change percent")
-    val changePercent: String
+    val changePercent: String,
 )

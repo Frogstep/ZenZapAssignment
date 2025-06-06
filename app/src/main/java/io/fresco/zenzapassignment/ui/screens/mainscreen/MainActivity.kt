@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
+import io.fresco.zenzapassignment.R
 import io.fresco.zenzapassignment.ui.components.MainScreenComponent
+import io.fresco.zenzapassignment.ui.components.TopTitleBar
 import io.fresco.zenzapassignment.ui.theme.ZenZapAssignmentTheme
 
 @AndroidEntryPoint
@@ -28,13 +27,11 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        TopAppBar(
-                            title = { Text("Stocks") }
-                        )
+                        TopTitleBar(title = ContextCompat.getString(this, R.string.title_text))
                     },
                     content = { innerPadding ->
                         MainScreenComponent(modifier = Modifier.padding(innerPadding))
-                    }
+                    },
                 )
             }
         }

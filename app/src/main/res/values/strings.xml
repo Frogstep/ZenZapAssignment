@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ZenZapAssignment</string>
+    <string name="title_text">My Stocks</string>
+    <string name="search_hint">Search Stocks…</string>
+    <string name="network_error">Can\'t fetch suggestions at the moment. Please try again later.</string>
+    <string name="can_t_fetch_suggestions_at_the_moment_please_try_again_later">suggestion_error</string>
+    <string name="already_added">"Stock %s is already in the list."</string>
+    <string name="failed_to_add_stock">"Failed to add stock %s. Please try again later."</string>
 </resources>

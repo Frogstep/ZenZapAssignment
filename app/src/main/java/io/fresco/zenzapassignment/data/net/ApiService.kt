@@ -14,20 +14,19 @@ interface ApiService {
     @GET("query/?function=SYMBOL_SEARCH")
     suspend fun query(
         @Query("keywords") searchString: String,
-    ) : SearchResponse
+    ): SearchResponse
 
     @GET("query/?function=GLOBAL_QUOTE&")
     suspend fun quote(
         @Query("symbol") symbol: String,
-    ) : GlobalQuoteResponse
+    ): GlobalQuoteResponse
 
-
-    companion object{
-        private val interceptor =  HttpLoggingInterceptor().apply {
+    companion object {
+        private val interceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
-        private val client =  OkHttpClient.Builder()
+        private val client = OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .addInterceptor(AuthInterceptor())
             .build()
@@ -38,6 +37,6 @@ interface ApiService {
             .client(client)
             .build()
 
-        fun create() =  retrofit.create(ApiService::class.java)
+        fun create() = retrofit.create(ApiService::class.java)
     }
 }

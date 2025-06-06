@@ -1,11 +1,15 @@
 package io.fresco.zenzapassignment.data
 
-import io.fresco.zenzapassignment.data.net.schemas.GlobalQuoteResponse
-import io.fresco.zenzapassignment.data.net.schemas.SearchResponse
+import kotlinx.coroutines.flow.StateFlow
 
 interface StockRepository {
 
     suspend fun searchStocks(keyword: String): Result<SearchResponseData>
 
-    suspend fun getQuote(symbols: String): Result<GlobalQuoteData>
+    suspend fun addSelectedQuote(symbols: String, name: String): Boolean
+    suspend fun updateAllQuotes(): Boolean
+
+    val quotesData: StateFlow<List<GlobalQuoteData>>
+    val errorMessages: StateFlow<String?>
+    val inProgress: StateFlow<Boolean>
 }

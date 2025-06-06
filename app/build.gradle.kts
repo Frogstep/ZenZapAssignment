@@ -1,10 +1,19 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
     kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
 }
 
 android {
@@ -36,7 +45,25 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+    lint {
+        baseline = file("lint-baseline.xml")
+        checkAllWarnings = true
+        textOutput = file("stdout")
+        textReport = true
+        warningsAsErrors = false
+        lintConfig = file("lint.xml")
+    }
+}
+
+ktlint {
+    version.set("0.49.1")
+    android.set(true)
+    reporters {
+        reporter(ReporterType.PLAIN)
+    }
+    outputToConsole.set(true)
 }
 
 dependencies {
@@ -49,17 +76,25 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.kotlinx.coroutines.core)
 
-    //Hilt
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    //implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    //Retrofit
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
+    // JSON
+    implementation(libs.kotlinx.serialization.json)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

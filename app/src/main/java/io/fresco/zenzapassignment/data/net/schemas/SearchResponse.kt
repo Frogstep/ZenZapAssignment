@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SearchResponse(
     @SerializedName("bestMatches")
-    val bestMatches: List<BestMatch>
+    val bestMatches: List<BestMatch>,
 )
 
 data class BestMatch(
@@ -25,5 +25,5 @@ data class BestMatch(
     @SerializedName("8. currency")
     val currency: String,
     @SerializedName("9. matchScore")
-    val matchScore: String
+    val matchScore: String,
 )

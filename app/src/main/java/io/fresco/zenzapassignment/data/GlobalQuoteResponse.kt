@@ -1,11 +1,13 @@
 package io.fresco.zenzapassignment.data
 
 import io.fresco.zenzapassignment.data.net.schemas.GlobalQuoteResponse
+import kotlinx.serialization.Serializable
 
-data class GlobalQuoteData(val quote: Quote) {
+data class GlobalQuoteData(val name: String, val quote: Quote) {
     companion object {
-        fun createFromGlobalQuoteResponse(response: GlobalQuoteResponse): GlobalQuoteData {
+        fun createFromGlobalQuoteResponse(response: GlobalQuoteResponse, name: String): GlobalQuoteData {
             return GlobalQuoteData(
+                name,
                 Quote(
                     symbol = response.globalQuote.symbol,
                     open = response.globalQuote.open,
@@ -16,13 +18,14 @@ data class GlobalQuoteData(val quote: Quote) {
                     latestTradingDay = response.globalQuote.latestTradingDay,
                     previousClose = response.globalQuote.previousClose,
                     change = response.globalQuote.change,
-                    changePercent = response.globalQuote.changePercent
-                )
+                    changePercent = response.globalQuote.changePercent,
+                ),
             )
         }
     }
 }
 
+@Serializable
 data class Quote(
     val symbol: String,
     val open: String,
@@ -33,5 +36,5 @@ data class Quote(
     val latestTradingDay: String,
     val previousClose: String,
     val change: String,
-    val changePercent: String
+    val changePercent: String,
 )
