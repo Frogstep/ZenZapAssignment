@@ -1,5 +1,6 @@
 package io.fresco.zenzapassignment.data.net
 
+import io.fresco.zenzapassignment.BuildConfig
 import io.fresco.zenzapassignment.data.net.schemas.GlobalQuoteResponse
 import io.fresco.zenzapassignment.data.net.schemas.SearchResponse
 import okhttp3.OkHttpClient
@@ -16,7 +17,7 @@ interface ApiService {
         @Query("keywords") searchString: String,
     ): SearchResponse
 
-    @GET("query/?function=GLOBAL_QUOTE&")
+    @GET("query/?function=GLOBAL_QUOTE")
     suspend fun quote(
         @Query("symbol") symbol: String,
     ): GlobalQuoteResponse
@@ -32,7 +33,7 @@ interface ApiService {
             .build()
 
         private val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("https://www.alphavantage.co/")
+            .baseUrl(BuildConfig.BACKEND_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
