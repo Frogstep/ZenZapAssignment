@@ -12,11 +12,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.fresco.zenzapassignment.R
 import io.fresco.zenzapassignment.ui.screens.mainscreen.MainViewModel
+import io.fresco.zenzapassignment.ui.theme.DeepBlue
 import io.fresco.zenzapassignment.ui.theme.DeepGreen
 import io.fresco.zenzapassignment.ui.utils.TextFormatter
 
@@ -24,6 +27,19 @@ import io.fresco.zenzapassignment.ui.utils.TextFormatter
 fun StockDataList(viewModel: MainViewModel) {
     val listState = rememberLazyListState()
     val stocks by viewModel.selectedStocks.collectAsState()
+
+    if (stocks.isEmpty()) {
+        Text(
+            text = stringResource(R.string.no_stocks_selected_yet),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 36.dp, start = 16.dp, end = 16.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp,
+            color = DeepBlue,
+        )
+        return
+    }
 
     LazyColumn(
         state = listState,

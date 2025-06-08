@@ -10,6 +10,8 @@ import io.fresco.zenzapassignment.data.SearchResponseData
 import io.fresco.zenzapassignment.data.StockRepository
 import io.fresco.zenzapassignment.data.update.StockDataUpdateService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +31,8 @@ class MainViewModel @Inject constructor(
         private const val TAG = "MainViewModel"
         private const val SEARCH_PREFIX = "$"
         private const val MAX_SUGGESTIONS = 5
+        private const val SEARCH_DELAY = 800L // Delay in millis before sending search.
+        // We need to wait to the user to stop typing
     }
 
     val selectedStocks = stockRepository.quotesData.stateIn(
@@ -55,6 +59,8 @@ class MainViewModel @Inject constructor(
     private val _commonErrorMessage = MutableStateFlow<String?>(null)
     val commonErrorMessage = _commonErrorMessage.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch {
             stockRepository.errorMessages.collect { error ->
@@ -66,6 +72,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles changes in the search query. We need to wait fo the user to stop typing first
+     */
     fun onSearchQueryChanged(keywords: String) {
         val normalizedKeywords = keywords.trim().lowercase()
         Log.d(TAG, "onSearchQueryChanged()-> Keywords: [$normalizedKeywords]")
@@ -76,12 +85,23 @@ class MainViewModel @Inject constructor(
             Log.d(TAG, "The keywords do not start with the search prefix '$SEARCH_PREFIX' or empty. Ignoring.")
             return
         }
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DELAY)
+            doSearch(normalizedKeywords.substring(SEARCH_PREFIX.length))
+        }
+    }
+
+    /**
+     * Performs the search operation using the normalized keywords.
+     * It fetches stock suggestions from the repository and updates the UI state accordingly.
+     */
+    private fun doSearch(normalizedKeywords: String) {
         _suggestionsLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val query = normalizedKeywords.removePrefix(SEARCH_PREFIX)
-                Log.d(TAG, "onSearchQueryChanged()-> Query: [$query]")
-                val result = stockRepository.searchStocks(query)
+                Log.d(TAG, "onSearchQueryChanged()-> Query: [$normalizedKeywords]")
+                val result = stockRepository.searchStocks(normalizedKeywords)
                 if (result.isSuccess) {
                     val response = result.getOrNull() ?: SearchResponseData(emptyList())
                     Log.d(TAG, "onSearchQueryChanged()-> Response: $response")
@@ -97,6 +117,7 @@ class MainViewModel @Inject constructor(
                     application.getString(R.string.can_t_fetch_suggestions_at_the_moment_please_try_again_later)
             } finally {
                 _suggestionsLoading.value = false
+                searchJob = null
             }
         }
     }
@@ -108,6 +129,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the selection of a stock symbol.
+     * If the stock is already selected, it shows an error message.
+     * Otherwise, it adds the stock to the selected list and clears the suggestions.
+     */
     suspend fun onStockSelected(symbol: String, name: String) {
         Log.d(TAG, "onStockSelected()-> Symbol: [$symbol]")
         if (isAlreadySelected(symbol)) {

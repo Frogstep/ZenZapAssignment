@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 class StockDataUpdateServiceImpl @Inject constructor(
     private val stockRepository: StockRepository,
@@ -18,15 +19,25 @@ class StockDataUpdateServiceImpl @Inject constructor(
         private const val TAG = "StockDataUpdateService"
     }
 
-    private var updateSchedulleJob: Job? = null
+    private var updateScheduleJob: Job? = null
     private var updateActionJob: Job? = null
     private var isRunning: Boolean = false
+    private var lastUpdateTime: Long = 0L
 
+    /**
+     * Starts the update service if it is not already running.
+     * If it is running, it will reschedule the updates. Minimal update delay is calculated based on the last update time.
+     */
     override suspend fun startUpdateService(scope: CoroutineScope) {
         Log.d(TAG, "Request to start update service received.")
         isRunning = true
-        updateSchedulleJob = scope.launch {
+        val initialDelay = max(0, lastUpdateTime - System.currentTimeMillis() + UPDATE_INTERVAL)
+        Log.d(TAG, "Scheduling updates with initial delay: $initialDelay ms")
+        updateScheduleJob?.cancel()
+        updateScheduleJob = scope.launch {
+            delay(initialDelay)
             while (isRunning) {
+                lastUpdateTime = System.currentTimeMillis()
                 doUpdateAllQuotes(scope)
                 delay(UPDATE_INTERVAL)
             }
@@ -48,11 +59,7 @@ class StockDataUpdateServiceImpl @Inject constructor(
                     Log.e(TAG, "Failed to update stock quotes.")
                 }
             } catch (e: Exception) {
-                Log.e(
-                    TAG,
-                    "Error updating stock quotes: ${e.message}",
-                    e,
-                )
+                Log.e(TAG, "Error updating stock quotes: ${e.message}", e)
             } finally {
                 updateActionJob = null
             }
@@ -61,7 +68,7 @@ class StockDataUpdateServiceImpl @Inject constructor(
 
     override suspend fun pauseUpdateService() {
         Log.d(TAG, "Request to pause update service received.")
-        updateSchedulleJob?.cancel()
+        updateScheduleJob?.cancel()
         isRunning = false
     }
 }

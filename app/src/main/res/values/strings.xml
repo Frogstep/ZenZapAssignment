@@ -6,4 +6,5 @@
     <string name="can_t_fetch_suggestions_at_the_moment_please_try_again_later">suggestion_error</string>
     <string name="already_added">"Stock %s is already in the list."</string>
     <string name="failed_to_add_stock">"Failed to add stock %s. Please try again later."</string>
+    <string name="no_stocks_selected_yet">No stocks selected yet</string>
 </resources>

@@ -12,7 +12,7 @@ with Compose's reactive tools to ensure smooth, responsive updates.
 ### Assumptions:
 
 1. **API Request Limit**:
-   The main constraint is a maximum of 25 requests per day. Once this limit is reached,
+   The main constraint is a maximum of **25 requests per day.** Once this limit is reached,
    the application will not work even with a new API key due to IP-based restrictions.
    To continue development or usage:
 
@@ -28,4 +28,7 @@ with Compose's reactive tools to ensure smooth, responsive updates.
 3. **Theme Support**:
    The app does not support dynamic switching between Day and Night modes.
    It assumes that the device is using a light theme.
+
+4. **No database cleanup**:
+   The app does not implement any database cleanup logic. 
 

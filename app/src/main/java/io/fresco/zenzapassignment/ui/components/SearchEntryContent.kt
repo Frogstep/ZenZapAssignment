@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,15 +25,17 @@ fun SearchEntryContent(symbol: String, name: String, onClick: () -> Job) {
             text = symbol,
             maxLines = 1,
             fontSize = 14.sp,
+            color = Color.Black,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.25f),
+            modifier = Modifier.weight(0.27f),
         )
         Text(
             text = name,
             maxLines = 1,
             fontSize = 14.sp,
+            color = Color.Black,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.75f),
+            modifier = Modifier.weight(0.73f),
         )
     }
 }
