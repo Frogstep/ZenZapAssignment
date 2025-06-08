@@ -32,3 +32,9 @@ with Compose's reactive tools to ensure smooth, responsive updates.
 4. **No database cleanup**:
    The app does not implement any database cleanup logic. 
 
+5. **No way to remove stocks from the watchlist**:
+   The app does not provide a way to remove stocks from the watchlist.
+
+6. **No unit tests**:
+   The app does not include unit tests. Because of the time constraints, I focused on implementing the core functionality.
+
